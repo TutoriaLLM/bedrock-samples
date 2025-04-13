@@ -1,4 +1,4 @@
-name: Upload All PNG Images to R2 CDN
+name: Upload all images to R2 CDN
 
 on:
   push:
@@ -6,54 +6,36 @@ on:
   workflow_dispatch:
 
 jobs:
-  prepare:
-    name: ファイルリストの作成とビルド
+  upload-to-r2:
     runs-on: ubuntu-latest
-    outputs:
-      file-list: ${{ steps.get-files.outputs.file-list }}
     steps:
-      - name: リポジトリのチェックアウト
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Node.js のセットアップ
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18"
+          cache: "pnpm"
 
-      - name: 依存関係のインストール＆ビルド実行
-        run: |
-          npm install
-          npm run build
+      - name: Install dependencies
+        run: pnpm install
 
-      - name: PNG ファイルのリストを作成
-        id: get-files
-        run: |
-          # dist ディレクトリ内の PNG ファイルを再帰的に検索
-          files=$(find dist -type f -name "*.png")
-          echo "Found PNG files:"
-          echo "$files"
-          # 各行（1ファイル）を JSON 配列に変換（jqが必要です）
-          file_array=$(echo "$files" | jq -R -s -c 'split("\n") | map(select(length > 0))')
-          echo "file-list=$file_array" >> $GITHUB_OUTPUT
+      - name: Build project
+        run: pnpm start
 
-  upload:
-    name: PNG ファイルを R2 にアップロード
-    needs: prepare
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        file: ${{ fromJson(needs.prepare.outputs.file-list) }}
-    steps:
-      - name: リポジトリのチェックアウト
-        uses: actions/checkout@v3
-
-      - name: R2 にファイルをアップロード
+      - name: Upload to R2
         uses: ryand56/r2-upload-action@latest
         with:
           r2-account-id: ${{ secrets.S3_ACCOUNT_ID }}
           r2-access-key-id: ${{ secrets.S3_ACCESS_KEY_ID }}
           r2-secret-access-key: ${{ secrets.S3_SECRET_ACCESS_KEY }}
           r2-bucket: ${{ secrets.S3_BUCKET }}
-          # matrix.file には各 PNG ファイルのフルパス（例: "dist/example.png"）が入ります
-          source-dir: ${{ matrix.file }}
+          source-dir: dist
           destination-dir: ./
