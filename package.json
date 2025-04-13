@@ -1,0 +1,28 @@
+{
+  "name": "bedrock-samples",
+  "version": "1.0.0",
+  "description": "",
+  "main": "render.ts",
+  "scripts": {
+    "start": "ts-node render.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/gl": "^6.0.5",
+    "@types/jsdom": "^21.1.7",
+    "canvas": "^3.1.0",
+    "fs": "0.0.1-security",
+    "gl": "^8.1.6",
+    "jsdom": "^26.0.0",
+    "path": "^0.12.7",
+    "three": "^0.175.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "@types/three": "^0.175.0"
+  }
+}

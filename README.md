@@ -1,7 +1,20 @@
-## Bedrock Add-On Sample Files
+## Minecraft Blocks for CDN
 
-The following sample files provide the latest resource and behavior examples for creating Add-Ons for Minecraft: Bedrock Edition. The source of these files is available at https://github.com/mojang/bedrock-samples. For more information on how to create Add-Ons for Minecraft, please visit https://minecraft.net/creator and https://learn.microsoft.com/minecraft/creator.
+> This repository is fork of https://github.com/Mojang/bedrock-samples
 
-You can see versions of this documentation corresponding to the latest previews in the [preview branch](https://github.com/Mojang/bedrock-samples/tree/preview).
+CDN is designed to return rendered blocks by `blocks_name`.png
 
-A version of the main documentation can also be found at [https://mojang.github.io/bedrock-samples/](https://mojang.github.io/bedrock-samples/).
+WARN: As this repository is still in development, some blocks are not supported and not rendered or returning broken images (e.g. fence, door, and some blocks that is not shaped like a cube).
+
+> ↑I NEED YOUR HELP TO FIX THEM. PLEASE CONTRIBUTE TO THIS REPOSITORY :)
+
+To find missing blocks, run `render.ts` and check `dist/missing_blocks.txt`.
+
+### Generate `block_name.png`
+
+Run `pnpm start` to generate `block_name.png` in `dist/`.
+
+### Upload to S3
+
+Set `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_REGION`, `S3_BUCKET` in environment variables.
+GitHub Actions will upload all images to S3.
